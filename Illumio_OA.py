@@ -1,7 +1,9 @@
 import sys
 
+# read and maps the log file to tags.
 def readfileandMap(log_file, map_file,output_tag_file='output_tags_count.csv',output_port_protocol_file='output_port_protocol.csv'):
 
+# forming the protocol map using the iana.org 
   protocol_num_map = {}
   with open("./protocols.txt","r") as file:
     for line in file:
@@ -11,6 +13,7 @@ def readfileandMap(log_file, map_file,output_tag_file='output_tags_count.csv',ou
         continue
       protocol_num_map[line[0]] = line[1].lower()
 
+# forming the map for dst port and protocol count.
   column_check1 = "version"
   column_check2 = "account-id"
   dstport = {}
@@ -30,6 +33,7 @@ def readfileandMap(log_file, map_file,output_tag_file='output_tags_count.csv',ou
   map_column_check2 = "protocol"
   dst_protocol_map = {}
 
+# forming the map for dst protocol and there corresponding tag
   with open(map_file,"r") as file:
     for line in file:
       line = line.strip()
@@ -40,7 +44,7 @@ def readfileandMap(log_file, map_file,output_tag_file='output_tags_count.csv',ou
         continue
       dst_protocol_map[line[0]+':'+line[1].lower()] = line[2]
 
-
+# calculating the count corresponding to the tags.
   tag_count = {}
   for key in dstport:
     if key in dst_protocol_map:
@@ -49,22 +53,20 @@ def readfileandMap(log_file, map_file,output_tag_file='output_tags_count.csv',ou
     else:
       tag_count['Untagged'] = tag_count.get('Untagged',0) + dstport[key]
 
-  # Writing data to a plain text file in CSV format
+  # Writing data to a plain text file in CSV format for tags.
   with open(output_tag_file, mode='w') as file:
     file.write('Tag,Count'+'\n')
     for key in tag_count:
-        # Join each element of the row with commas and write to the file
         file.write(key+',' + str(tag_count.get(key)) + '\n')
   print("Data written to output_tag file")
 
-  # Writing data to a plain text file in CSV format
+  # Writing data to a plain text file in CSV format for dst protocol combination
   with open(output_port_protocol_file, mode='w') as file:
     file.write('Port,Protocol,Count'+'\n')
     for key in dstport:
         dstPort_protocol = key.split(':')
         port = dstPort_protocol[0]
         protocol = dstPort_protocol[1]
-        # Join each element of the row with commas and write to the file
         file.write(port +','+ protocol +',' + str(dstport.get(key)) + '\n')
   print("Data written to output_port_protocol file")
 
