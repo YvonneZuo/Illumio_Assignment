@@ -68,10 +68,5 @@ def readfileandMap(log_file, map_file,output_tag_file='output_tags_count.csv',ou
         file.write(port +','+ protocol +',' + str(dstport.get(key)) + '\n')
   print("Data written to output_port_protocol file")
 
-  print(dstport) 
-  print(tag_count)
-
-
-
 if __name__ == "__main__":
   readfileandMap(sys.argv[1],sys.argv[2])
